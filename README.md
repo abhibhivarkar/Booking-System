@@ -1,48 +1,56 @@
 
-# 🚀 Booking System (Spring Boot + JWT + RBAC)
 
-A RESTful booking system built with **Spring Boot 3, Java 17, and MySQL/PostgreSQL**.
-It supports **JWT authentication, role-based access (ADMIN/USER)**, and **resource & reservation management** with filtering, pagination, and sorting.
+# 📖 Booking System API
+
+![Java](https://img.shields.io/badge/Java-17-blue)
+![Spring Boot](https://img.shields.io/badge/SpringBoot-3.x-green)
+![Database](https://img.shields.io/badge/Database-MySQL%2FPostgres-orange)
+![JWT](https://img.shields.io/badge/Auth-JWT-red)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
+
+A **RESTful booking system** built with **Spring Boot 3, Java 17, and MySQL/PostgreSQL**.
+It supports **JWT authentication**, **role-based access (ADMIN/USER)**, and **resource & reservation management** with filtering, pagination, and sorting.
 
 ---
 
-## 📌 Features
+## ✨ Features
 
-* 🔐 **JWT Authentication** with Role-Based Access Control (RBAC)
+* 🔐 **Authentication & RBAC**
 
   * **ADMIN** → Full CRUD on resources & reservations
   * **USER** → View resources, create reservations, view own reservations
-* 📦 **Resources Management** (rooms, vehicles, equipment, etc.)
-* 📝 **Reservations** with status (`PENDING`, `CONFIRMED`, `CANCELLED`) and price
-* 🔍 **Filtering, Pagination & Sorting** support
-* ⚡ **Secure password storage** using BCrypt
+* 📦 **Resources**: Manage bookable items (rooms, vehicles, equipment)
+* 📝 **Reservations**: Track status (`PENDING`, `CONFIRMED`, `CANCELLED`) with pricing
+* 🔍 **Filtering** by status & price + **Pagination & Sorting**
+* ⚡ **Secure password storage** (BCrypt)
 * 📖 **Swagger/OpenAPI documentation**
-* 📂 **Postman collection included**
+* 🛠️ **Postman collection included**
 
 ---
 
-## 🏗️ Tech Stack
+## 🛠️ Tech Stack
 
-* **Backend**: Spring Boot 3, Java 17
-* **Database**: MySQL / PostgreSQL
-* **Security**: Spring Security, JWT
-* **Build Tool**: Maven
-* **Documentation**: Swagger
+* **Backend** → Java 17, Spring Boot 3.x
+* **Database** → MySQL / PostgreSQL
+* **Security** → Spring Security + JWT
+* **ORM** → Hibernate / Spring Data JPA
+* **Build Tool** → Maven
+* **Docs** → Swagger / Springdoc
 
 ---
 
-## ⚙️ Installation & Setup
+## 🚀 Getting Started
 
-### 1. Clone the repository
+### 1️⃣ Clone the repository
 
 ```bash
 git clone https://github.com/your-username/booking-system.git
 cd booking-system
 ```
 
-### 2. Configure Database
+### 2️⃣ Configure database
 
-Update `application.properties` with your database credentials:
+Update `application.properties`:
 
 ```properties
 spring.datasource.url=jdbc:mysql://localhost:3306/bookingdb
@@ -52,20 +60,31 @@ spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
 ```
 
-### 3. Run the application
+For **Postgres**:
+
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/bookingdb
+spring.datasource.username=postgres
+spring.datasource.password=yourpassword
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+```
+
+### 3️⃣ Run the app
 
 ```bash
 mvn spring-boot:run
 ```
 
-Application will start on: `http://localhost:8080`
+👉 App runs at: `http://localhost:8080`
 
 ---
 
-## 👥 Default Test Users
+## 👥 Default Users (seeded)
 
-* **Admin** → `admin / admin123` (ROLE\_ADMIN)
-* **User** → `user / user123` (ROLE\_USER)
+| Role  | Username | Password |
+| ----- | -------- | -------- |
+| ADMIN | admin    | admin123 |
+| USER  | user     | user123  |
 
 ---
 
@@ -73,75 +92,30 @@ Application will start on: `http://localhost:8080`
 
 ### 🔑 Authentication
 
-* `POST /api/auth/register` → Register new user
-* `POST /api/auth/login` → Login & get JWT token
+* `POST /api/auth/login` → Login & get JWT
+* `POST /api/auth/register` → Register user
 
 ### 📦 Resources
 
-* `GET /api/resources` → Get all resources
-* `POST /api/resources` → Create resource (ADMIN only)
-* `PUT /api/resources/{id}` → Update resource (ADMIN only)
-* `DELETE /api/resources/{id}` → Delete resource (ADMIN only)
+* `GET /api/resources` → List all resources (paginated)
+* `GET /api/resources/{id}` → Get resource by ID
+* `POST /api/resources` → Create (ADMIN only)
+* `PUT /api/resources/{id}` → Update (ADMIN only)
+* `DELETE /api/resources/{id}` → Delete (ADMIN only)
 
 ### 📝 Reservations
 
-* `GET /api/reservations` → Get all reservations (ADMIN only)
-* `GET /api/reservations/my` → Get logged-in user’s reservations
-* `POST /api/reservations` → Create reservation (USER only)
-* `PUT /api/reservations/{id}` → Update reservation status (ADMIN only)
+* `GET /api/reservations` →
+
+  * ADMIN → all reservations
+  * USER → only own reservations
+* Supports query params: `status`, `minPrice`, `maxPrice`, `page`, `size`, `sort`
+* `GET /api/reservations/{id}` → Reservation by ID
+* `POST /api/reservations` → Create reservation
+* `PUT /api/reservations/{id}` → Update (ADMIN/owner)
 * `DELETE /api/reservations/{id}` → Cancel reservation
 
 ---
 
-## 📖 Swagger Documentation
-
-After running the app, visit:
 👉 `http://localhost:8080/swagger-ui.html`
 
----
-
-## 🛠️ Postman Collection
-
-A ready Postman collection is available in the repository for quick testing.
-
----
-
-## 🗄️ ER Diagram
-
-```mermaid
-erDiagram
-    USER {
-        Long id
-        String username
-        String password
-        Enum role
-    }
-    RESOURCE {
-        Long id
-        String name
-        String description
-    }
-    RESERVATION {
-        Long id
-        Enum status
-        Double price
-        Date start_date
-        Date end_date
-    }
-
-    USER ||--o{ RESERVATION : makes
-    RESOURCE ||--o{ RESERVATION : booked_for
-```
-
----
-
-## 🏛️ Architecture Diagram
-
-```mermaid
-flowchart TD
-    A[Client (Postman / Angular / React)] -->|HTTP/JSON| B[Spring Boot REST API]
-    B --> C[Controller Layer]
-    C --> D[Service Layer]
-    D --> E[Repository Layer (JPA/Hibernate)]
-    E --> F[(Database: MySQL/PostgreSQL)]
-    B --> G[Spring Security + JWT]
